@@ -5,6 +5,8 @@ piecesb =  {'Q': 4 ,'K' : 3}
 piecesw = {'K': 4,'Q' : 3}
 dict = {'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4, 'f': 5, 'g': 6, 'h': 7}
 
+
+
 def transform_board_to_screen(val):
     x = dict[val[0]]
     y = 8-int(val[1])
@@ -38,6 +40,104 @@ def something_in_middle_v(coord,goal,positions):
                     if(positions[i][j][0] < goal[1] and positions[i][j][1] > coord[1] ):
                         return True
     return False
+
+def get_dying_piece(pos,positions):
+    coord = transform_board_to_screen(pos)
+    for i in range (0,len(positions)):
+        for j in range(0,8):
+            if(positions[i][j] == coord):
+                return (i,j)
+
+def get_piece_concurrence(letter,diff,color,positions):
+    if(letter=='R'):
+        if(color):
+            if(diff.isalpha()):
+                x_pos=dict[diff]
+                if (positions[0][0][0] == x_pos):
+                    return 0
+                else:
+                    return 7
+            else:
+                y_pos = int(diff)
+                if (positions[0][0][1] == y_pos):
+                    return 0
+                else:
+                    return 7
+        else:
+            if(diff.isalpha()):
+                x_pos=dict[diff]
+                if (positions[1][0][0] == x_pos):
+                    return 0
+                else:
+                    return 7
+            else:
+                y_pos = int(diff)
+                if (positions[1][0][1] == y_pos):
+                    return 0
+                else:
+                    return 7
+
+    elif (letter=='N'):#if this is a knight moving
+        if(color):
+            if(diff.isalpha()):
+                x_pos=dict[diff]
+                if (positions[0][1][0] == x_pos):
+                    return 1
+                else:
+                    return 6
+            else:
+                y_pos = int(diff)
+                if (positions[0][1][1] == y_pos):
+                    return 1
+                else:
+                    return 6
+        else:
+            if(diff.isalpha()):
+                x_pos=dict[diff]
+                if (positions[1][1][0] == x_pos):
+                    return 1
+                else:
+                    return 6
+            else:
+                y_pos = int(diff)
+                if (positions[1][1][1] == y_pos):
+                    return 1
+                else:
+                    return 6
+
+
+    elif (letter =='B'):
+        if(color):
+            if(diff.isalpha()):
+                x_pos=dict[diff]
+                if (positions[0][0][0] == x_pos):
+                    return 2
+                else:
+                    return 5
+            else:
+                y_pos = int(diff)
+                if (positions[0][0][1] == y_pos):
+                    return 2
+                else:
+                    return 5
+        else:
+            if(diff.isalpha()):
+                x_pos=dict[diff]
+                if (positions[1][0][0] == x_pos):
+                    return 2
+                else:
+                    return 5
+            else:
+                y_pos = int(diff)
+                if (positions[1][0][1] == y_pos):
+                    return 2
+                else:
+                    return 5
+
+    else:#pawn in case letter
+        return -1
+
+
 
 def get_piece_index(letter,but,color,positions):
     if(letter=='R'):#no possible ambiguity
@@ -174,8 +274,10 @@ def get_piece_index(letter,but,color,positions):
                     return 2
                 else:
                     return 5
-    else:
+    elif(letter =='K' or letter =='Q'):
         if(color):
             return piecesw[letter]
         else:
             return piecesb[letter]
+    else:#pawn in case letter
+        return -1
