@@ -66,12 +66,13 @@ def get_piece_concurrence(letter,diff,color,positions):
                 else:
                     return 7
             else:
-                y_pos = int(diff)
+                y_pos = 8 - int(diff)
                 if (positions[0][0][1] == y_pos):
                     return 0
                 else:
                     return 7
         else:
+            print(diff)
             if(diff.isalpha()):
                 x_pos=dict[diff]
                 if (positions[1][0][0] == x_pos):
@@ -79,7 +80,8 @@ def get_piece_concurrence(letter,diff,color,positions):
                 else:
                     return 7
             else:
-                y_pos = int(diff)
+                y_pos = 8-int(diff)
+                print(y_pos)
                 if (positions[1][0][1] == y_pos):
                     return 0
                 else:
@@ -94,7 +96,7 @@ def get_piece_concurrence(letter,diff,color,positions):
                 else:
                     return 6
             else:
-                y_pos = int(diff)
+                y_pos = 8-int(diff)
                 if (positions[0][1][1] == y_pos):
                     return 1
                 else:
@@ -107,7 +109,7 @@ def get_piece_concurrence(letter,diff,color,positions):
                 else:
                     return 6
             else:
-                y_pos = int(diff)
+                y_pos = 8-int(diff)
                 if (positions[1][1][1] == y_pos):
                     return 1
                 else:
@@ -123,7 +125,7 @@ def get_piece_concurrence(letter,diff,color,positions):
                 else:
                     return 5
             else:
-                y_pos = int(diff)
+                y_pos = 8-int(diff)
                 if (positions[0][0][1] == y_pos):
                     return 2
                 else:
@@ -136,7 +138,7 @@ def get_piece_concurrence(letter,diff,color,positions):
                 else:
                     return 5
             else:
-                y_pos = int(diff)
+                y_pos = 8 - int(diff)
                 if (positions[1][0][1] == y_pos):
                     return 2
                 else:
