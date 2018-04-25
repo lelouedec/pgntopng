@@ -36,94 +36,80 @@ def generate(game,game_name):
     gameboard = []
     gameboard.append(positions)
     images = []
-    for i in range(0,12):
-
+    for i in range(0,41):
+        print(i)
+        if(int(arg1)):
+            if(arg2):
+                image = Image.new( 'RGB', (800,800), (181,136,99)) # create a new black image
+            else:
+                image = Image.new( 'RGB', (1400,800), (181,136,99)) # create a new black image
+            img1 = draw_board(positions,image)
+            image.paste(img1,(0,0))
+            images.append(image)
         ###WHITE MOVE
-        if(len(game[i][0])==2):#can only be a pawn moving vertically
-            coord = transform_board_to_screen(game[i][0])
-            positions[2][dict[game[i][0][0]]] = coord
-        elif(len(game[i][0])==3):
-            if(game[i][0][0] =='O'):#no possible ambiguity
-                positions[0][7] = (positions[0][7][0]-2,positions[0][7][1])
-                positions[0][4] = (positions[0][4][0]+2,positions[0][4][1])
-            else:
-                piece_index = get_piece_index(game[i][0][0],(game[i][0][1],game[i][0][2]),1,positions)
-                positions[0][piece_index] = transform_board_to_screen((game[i][0][1],game[i][0][2]))
-        elif(len(game[i][0])==4):#Nbd7 cxb5 Nxd6
-            if(game[i][0][1] =='x'):#cxb5 Nxd6
-                piece_index = get_piece_index(game[i][0][0],(game[i][0][2],game[i][0][3]),1,positions)
-                goal = transform_board_to_screen( (game[i][0][2],game[i][0][3]) )
-                if(piece_index == -1):#cxb5
-                    dead_piece = get_dying_piece((game[i][0][2],game[i][0][3]),positions)
-                    positions[2][dict[game[i][0][0]]] = goal
-                    positions[dead_piece[0]][dead_piece[1]] = (-1,-1)
-                else:#Nxd6
-                    piece_dead_indices = get_dying_piece((game[i][0][2],game[i][0][3]),positions)
-                    positions[piece_dead_indices[0]][piece_dead_indices[1]] = (-1,-1)
-                    positions[0][piece_index] = goal
-            else:#Nbd7
-                piece_index = get_piece_concurrence(game[i][0][0],game[i][0][1],1,positions)
-                goal = transform_board_to_screen((game[i][0][2],game[i][0][3]))
-                positions[0][piece_index] = goal
-        else:
-            if(game[i][0][0]=='O'):#O-O-O
-                positions[0][0] = (positions[0][0][0]+3,positions[0][0][1])
-                positions[0][4] = (positions[0][4][0]-2,positions[0][4][1])
-            else:
-                print(game[i])
 
-        if(int(arg1)):
-            if(arg2):
-                image = Image.new( 'RGB', (800,800), (20,100,70)) # create a new black image
+        for j in range(0,2):
+            if(game[i][j][-1] == "+" or game[i][j][-1] == "+"):#check
+                a = list(game[i])
+                a[j] = a[j][:-1]
+                print(a)
+                game[i] = tuple(a)
+            if(len(game[i][j])==2):#can only be a pawn moving vertically
+                coord = transform_board_to_screen(game[i][j])
+                if(j==0):
+                    moved = get_pawn_moved((coord[0],coord[1]+1),positions)
+                    if(moved == None):
+                        moved = get_pawn_moved((coord[0],coord[1]+2),positions)
+                else:
+                    moved = get_pawn_moved((coord[0],coord[1]-1),positions)
+                    if(moved == None):
+                        moved = get_pawn_moved((coord[0],coord[1]-2),positions)
+                positions[moved[0]][moved[1]] = coord ##regler probleme de pions qui avance mais pas sur sa colone
+            elif(len(game[i][j])==3):
+                if(game[i][j][0] =='O'):#no possible ambiguity
+                    positions[j][7] = (positions[j][7][0]-2,positions[j][7][1])
+                    positions[j][4] = (positions[j][4][0]+2,positions[j][4][1])
+                else:
+                    piece_index = get_piece_index(game[i][j][0],(game[i][j][1],game[i][j][2]),j,positions)
+                    positions[j][piece_index] = transform_board_to_screen((game[i][j][1],game[i][j][2]))
+            elif(len(game[i][j])==4):#Nbd7 cxb5 Nxd6
+                if(game[i][j][1] =='x'):#cxb5 Nxd6
+                    piece_index = get_piece_index(game[i][j][0],(game[i][j][2],game[i][j][3]),j,positions)
+                    goal = transform_board_to_screen( (game[i][j][2],game[i][j][3]) )
+                    if(piece_index == -1):#cxb5
+                        dead_piece = get_dying_piece((game[i][j][2],game[i][j][3]),positions)
+                        if(j==0):
+                            moved = get_pawn_moved((dict[game[i][j][0]],goal[1]+1),positions)
+                        else:
+                            moved = get_pawn_moved((dict[game[i][j][0]],goal[1]-1),positions)
+                        positions[moved[0]][moved[1]] = goal
+                        positions[dead_piece[0]][dead_piece[1]] = (-1,-1)
+                    else:#Nxd6
+                        piece_dead_indices = get_dying_piece((game[i][j][2],game[i][j][3]),positions)
+                        positions[piece_dead_indices[0]][piece_dead_indices[1]] = (-1,-1)
+                        positions[j][piece_index] = goal
+                else:#Nbd7
+                    piece_index = get_piece_concurrence(game[i][j][0],game[i][j][1],j,positions)
+                    goal = transform_board_to_screen((game[i][j][2],game[i][j][3]))
+                    positions[j][piece_index] = goal
             else:
-                image = Image.new( 'RGB', (1400,800), (20,100,70)) # create a new black image
-            img1 = draw_board(positions,image)
-            image.paste(img1,(0,0))
-            images.append(image)
+                if(game[i][j][0]=='O'):#O-O-O
+                    positions[j][0] = (positions[j][0][0]+3,positions[j][0][1])
+                    positions[j][4] = (positions[j][4][0]-2,positions[j][4][1])
+                else:
+                    print(game[i])
 
-        ###BLACK MOVE
-        if(len(game[i][1])==2):
-            coord = transform_board_to_screen(game[i][1])
-            positions[3][dict[game[i][1][0]]] = coord
-        elif(len(game[i][1])==3):
-            if(game[i][1][0] =='O'):#no possible ambiguity
-                positions[1][7] = (positions[1][7][0]-2,positions[1][7][1])
-                positions[1][4] = (positions[1][4][0]+2,positions[1][4][1])
-            else:
-                piece_index = get_piece_index(game[i][1][0],(game[i][1][1],game[i][1][2]),0,positions)
-                positions[1][piece_index] = transform_board_to_screen((game[i][1][1],game[i][1][2]))
-        elif(len(game[i][1])==4):#Nbd7 cxb5 Nxd6
-            if(game[i][1][1] =='x'):#cxb5 Nxd6
-                piece_index = get_piece_index(game[i][1][0],(game[i][1][2],game[i][1][3]),1,positions)
-                goal = transform_board_to_screen( (game[i][1][2],game[i][1][3]) )
-                if(piece_index == -1):#cxb5
-                    dead_piece = get_dying_piece((game[i][1][2],game[i][1][3]),positions)
-                    positions[3][dict[game[i][1][0]]] = goal
-                    positions[dead_piece[0]][dead_piece[1]] = (-1,-1)
-                else:#Nxd6
-                    piece_dead_indices = get_dying_piece((game[i][1][2],game[i][1][3]),positions)
-                    positions[piece_dead_indices[0]][piece_dead_indices[1]] = (-1,-1)
-                    positions[1][piece_index] = goal
-            else:#Nbd7
-                piece_index = get_piece_concurrence(game[i][1][0],game[i][1][1],0,positions)
-                goal = transform_board_to_screen((game[i][1][2],game[i][1][3]))
-                positions[1][piece_index] = goal
-        else:
-            if(game[i][1][0]=='O'):#O-O-O
-                positions[1][0] = (positions[1][0][0]+3,positions[1][0][1])
-                positions[1][4] = (positions[1][4][0]-2,positions[1][4][1])
-            else:
-                print(game[i])
+            if(int(arg1)):
+                if(arg2):
+                    image = Image.new( 'RGB', (800,800), (181,136,99)) # create a new black image
+                else:
+                    image = Image.new( 'RGB', (1400,800), (181,136,99)) # create a new black image
+                img1 = draw_board(positions,image)
+                image.paste(img1,(0,0))
+                images.append(image)
 
-        #gameboard.append(positions)
-        if(int(arg1)):
-            if(arg2):
-                image = Image.new( 'RGB', (800,800), (20,100,70)) # create a new black image
-            else:
-                image = Image.new( 'RGB', (1400,800), (20,100,70)) # create a new black image
-            img1 = draw_board(positions,image)
-            image.paste(img1,(0,0))
-            images.append(image)
+
+
     if(int(arg1)):
         create_gif(images,game_name)
 
