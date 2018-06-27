@@ -4,7 +4,7 @@ from Utils import *
 #from create_gif import *
 import sys
 import re
-import os 
+import os
 def create_game_array(gamestring):
     game_array = gamestring.split(" ")
     game_array2 = []
